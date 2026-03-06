@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@layer components{
+  .align-element{
+      @apply mx-auto max-w-7xl px-8;
+  }
+
+  .link-base{
+    @apply text-sm font-medium text-slate-300 hover:text-white transition;
+  }
+}
