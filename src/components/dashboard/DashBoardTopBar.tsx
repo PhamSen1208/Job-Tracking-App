@@ -13,7 +13,7 @@ const DashBoardTopBar = () => {
 
                 <button
                     onClick={logout}
-                    className="rounded-md bg-slate-800 px-3 py-2 text-xs font-medium hover:bg-slate-700">
+                    className="rounded-md bg-slate-800 px-3 py-2 text-xs font-medium hover:bg-slate-500">
                     Đăng xuất
                 </button>
             </div>
