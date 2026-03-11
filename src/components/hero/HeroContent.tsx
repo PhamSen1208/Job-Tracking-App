@@ -5,7 +5,7 @@ const HeroContent = () => {
         <div className="space-y-6">
             <h1 className="font-bold text-4xl tracking-tight md:text-5xl grid gap-2 leading-tight">
                 Quản lý công việc 
-                <span className="block bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent pb-0.5">
+                <span className="block bg-linear-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent pb-0.5">
                     thông minh & hiệu quả
                 </span>
             </h1>

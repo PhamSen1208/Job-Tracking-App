@@ -1,8 +1,8 @@
 const stats = [
-  { label: 'Jobs theo dõi', value: '1,200+' },
+  { label: 'Jobs theo dõi', value: '102+' },
   { label: 'Tỷ lệ phản hồi', value: '32%' },
   { label: 'Thời gian cập nhật', value: '< 1s' },
-  { label: 'Templates CV', value: '10+' },
+  { label: 'Templates CV', value: '10+'  },
 ]
 
 const Stats = () => {
@@ -18,9 +18,6 @@ const Stats = () => {
               Theo dõi rõ ràng, tối ưu thời gian và tập trung vào điều quan trọng.
             </p>
           </div>
-          <p className="text-xs text-slate-400">
-            *Số liệu minh hoạ cho UI demo
-          </p>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

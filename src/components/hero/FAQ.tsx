@@ -4,12 +4,12 @@ const faqs = [
     a: 'Theo dõi các job bạn đã ứng tuyển: công ty, vị trí, trạng thái (pending/interview/declined), ghi chú và ngày hẹn.',
   },
   {
-    q: 'Có cần backend ngay không?',
-    a: 'Chưa cần. Ta có thể bắt đầu với mock data/localStorage, sau đó mới nối API thật.',
+    q: 'Jobster liệu có cần thiết cho người tìm việc không?',
+    a: 'Đối với sinh viên, người cần công việc và rải 1 số lượng lớn CV thì Jobster hoàn toàn phù hợp.',
   },
   {
-    q: 'Mình có thể tuỳ biến giao diện không?',
-    a: 'Có. Tailwind giúp bạn chỉnh theme, spacing và component rất nhanh (và dễ đồng bộ).',
+    q: 'Giao diện của Jobster cần có sự thay đổi để phù hợp với logic của khách hàng hơn',
+    a: 'Đồng ý. Hiện tại dev đang thu thập các ý kiến người dùng để nâng cao chất lượng trải nghiệm và hoàn thiện UI.',
   },
 ]
 

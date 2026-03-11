@@ -28,11 +28,8 @@ const Testimonials = () => {
             Người dùng nói gì?
           </h2>
           <p className="mt-2 text-sm text-slate-300 md:text-base">
-            Một vài nhận xét (demo) để trang landing “có chiều sâu” hơn.
+            Một vài nhận xét của người dùng khi sử dụng Sên Jobless
           </p>
-        </div>
-        <div className="hidden md:block text-xs text-slate-400">
-          Social proof
         </div>
       </div>
 

@@ -9,6 +9,8 @@ import Profile from './pages/Profile'
 import NotFound from './pages/NotFound'
 import HomeLayout from './layouts/HomeLayout'
 import DashBoardLayout from './layouts/DashBoardLayout'
+import ProtectedRoute from './components/auth/ProtectedRoute'
+
 
 function App() {
   return (
@@ -19,10 +21,41 @@ function App() {
         <Route path="/register" element={<Register />} />
       </Route>
       <Route element = {<DashBoardLayout/>}>
-        <Route path="dashboard" element = {<Dashboard/>} />
-        <Route path="jobs" element={<Jobs />} />
-        <Route path="jobs/:id" element={<JobDetail />} />
-        <Route path="profile" element={<Profile />} />
+        <Route 
+          path="dashboard" 
+          element = {
+            <ProtectedRoute>
+              <Dashboard/>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="jobs" 
+          element={
+            <ProtectedRoute>
+              <Jobs />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="jobs/:id" 
+          element={
+            <ProtectedRoute>
+              <JobDetail />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="profile" 
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } 
+        />
       </Route>
       <Route path="*" element={<NotFound/>}/>
     </Routes>
