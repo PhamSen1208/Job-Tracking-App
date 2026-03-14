@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Jobs from './pages/Jobs'
+import AddJob from './pages/AddJob'
 import JobDetail from './pages/JobDetail'
 import Profile from './pages/Profile'
 import NotFound from './pages/NotFound'
@@ -37,6 +38,15 @@ function App() {
               <Jobs />
             </ProtectedRoute>
           } 
+        />
+
+        <Route
+          path="add-job"
+          element={
+            <ProtectedRoute>
+              <AddJob />
+            </ProtectedRoute>
+          }
         />
 
         <Route 

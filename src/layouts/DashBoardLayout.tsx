@@ -1,14 +1,20 @@
-import { Outlet} from "react-router-dom"
-import DashBoardTopBar from "../components/dashboard/DashBoardTopBar"
+import { Outlet } from "react-router-dom";
+import DashboardTopBar from "../components/dashboard/DashboardTopBar";
+
 const DashBoardLayout = () => {
-    return (
-      <main className="min-h-screen flex bg-slate-950 text-slate-50">
-        <div className="align-element py-6 w-full">
-            <DashBoardTopBar/>
-            <Outlet/>
+  return (
+    <main className="min-h-screen bg-slate-950 text-slate-50">
+      <div className="sticky top-0 z-40 backdrop-blur border-b border-slate-900">
+        <div className="align-element py-4">
+          <DashboardTopBar />
         </div>
-      </main>
-    )
-  }
-  
-  export default DashBoardLayout
+      </div>
+
+      <div className="align-element py-6">
+        <Outlet />
+      </div>
+    </main>
+  );
+};
+
+export default DashBoardLayout;

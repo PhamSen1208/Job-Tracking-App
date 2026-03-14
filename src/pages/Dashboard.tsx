@@ -1,10 +1,22 @@
+import DashboardHeader from "../components/dashboard/DashboardHeader";
+import DashboardStats from "../components/dashboard/DashboardStats";
+import DashboardChart from "../components/dashboard/DashboardChart";
+import DashboardJobs from "../components/dashboard/DashboardJobs";
+import DashboardSuggestions from "../components/dashboard/DashboardSuggestions";
+
 const Dashboard = () => {
   return (
-    <main className="min-h-screen flex  bg-slate-950 text-slate-50">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
-    </main>
-  )
-}
+    <section className="space-y-8">
+      <DashboardHeader />
+      <DashboardStats />
+      <DashboardChart />
 
-export default Dashboard
+      <div className="grid gap-6 lg:grid-cols-3">
+        <DashboardJobs />
+        <DashboardSuggestions />
+      </div>
+    </section>
+  );
+};
 
+export default Dashboard;
