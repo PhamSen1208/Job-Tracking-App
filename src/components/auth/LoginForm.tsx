@@ -1,95 +1,64 @@
-//Login form: quản lý dữ liệu email, password, quên mật khẩu.
-// Xử lý submit
-// Hiển thị lỗi/ trạng thái lỗi
-// Khi dữ liệu có thể thay đổi do user, API, logic và cần cập nhật lại UI -> dùng useState :)). Remember
-import { useState } from "react"
+
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import google from "../../assets/images/google.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
+import { Input } from "../ui/Input"
+import { Button } from "../ui/Button"
+
+// Zod Schema
+const loginSchema = z.object({
+  email: z.string().min(1, { message: "Email không được để trống" }).email({ message: "Email không đúng định dạng" }),
+  password: z.string().min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" }),
+})
+
+type LoginFormValues = z.infer<typeof loginSchema>
 
 const LoginForm = () => {
-  //Thiết lập các state cần thiết
-  const { login } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { login, error, clearError, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  })
 
-     //Validate
-     if(!email.trim() || !password.trim())
-     {
-      setError("Vui lòng nhập đầy đủ email và mật khẩu.");
-      return;
-    }
-
-    if(!email.includes("@"))
-    {
-      setError("Email không hợp lệ.");
-      return;
-    }
-
-    try 
-     {
-      setIsLoading(true);
-      await login(email, password);
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      await login(data.email, data.password);
       navigate("/dashboard");
-     } catch {
-       setError("Đăng nhập thất bại, vui lòng thử lại.");
-     } finally {
-       setIsLoading(false);
-     }
+      toast.success("Đăng nhập thành công!");
+    } catch (err) {
+      toast.error("Đăng nhập không thành công!");
+    }
   }
   
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        {/*Email*/}
-        <label 
-          htmlFor="email" 
-          className="block text-sm font-medium text-slate-200">
-          Email
-        </label>
-        <input 
-          type="email"
-          id="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="block w-full rounded 
-            border border-slate-700 bg-slate-900/60
-            px-3 py-2
-            text-sm text-slate-50 
-            focus:border-emerald-500 focus:outline-none focus:ring-1  focus:ring-emerald-500" 
-          placeholder="example@gmail.com"
-        />
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {/*Email*/}
+      <Input 
+        label="Email"
+        type="email"
+        placeholder="example@gmail.com"
+        {...register("email")}
+        error={errors.email?.message}
+      />
 
       {/*Password*/}
-      <div className="space-y-2">
-        <label 
-          htmlFor="password" 
-          className="block text-sm font-medium text-slate-200">
-          Mật khẩu
-        </label>
-        <input 
-          type="password"
-          id="password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="block w-full rounded 
-            border border-slate-700 bg-slate-900/60
-            px-3 py-2
-            text-sm text-slate-50
-            focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" 
-          placeholder="••••••••"
-        />
-      </div>
+      <Input 
+        label="Mật khẩu"
+        type="password"
+        placeholder="••••••••"
+        {...register("password")}
+        error={errors.password?.message}
+      />
 
       {/*Ghi nhớ đăng nhập*/}
       <div className="flex items-center justify-between">
@@ -103,19 +72,30 @@ const LoginForm = () => {
           to="/register"
           className="font-medium text-slate-500 hover:text-slate-200 text-xs">Quên mật khẩu?</Link>
       </div>
-      {/*Error */}
+
+      {/*Error box from API (if any)*/}
       {error && (
-        <p className="text-xs text-red-400">
-          {error}
-        </p>
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400 flex items-center gap-2 justify-between transition-all duration-300" role="alert">
+          <div className="flex items-center gap-2">
+            <svg className="h-5 w-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            <span>{error}</span>
+          </div>
+          <button
+            type="button"
+            onClick={clearError}
+            className="ml-auto text-red-400 hover:text-red-300 font-bold"
+            aria-label="Close error">
+            ✕
+          </button>
+        </div>
       )}
-      {/*Đăng nhập*/}
-      <button 
-        type="submit"
-        disabled={isLoading}
-        className="flex w-full items-center justify-center font-medium px-4 py-2.5 bg-emerald-500 rounded-lg text-lg disabled:cursor-not-allowed disabled:opacity-70">
-          {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
-      </button>
+
+      {/*Submit*/}
+      <Button type="submit" isLoading={isLoading} className="mt-2">
+        {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
+      </Button>
 
       {/*Ngăn*/}
       <div className="relative py-2 text-center text-xs text-slate-500">
@@ -132,7 +112,6 @@ const LoginForm = () => {
           hover:border-slate-500 hover:bg-slate-800/80">
           <span className="h-4 w-4 rounded-full bg-slate-700" />
           Đăng nhập với Google 
-
           <img 
             src={google} 
             alt="google-icon"
@@ -143,4 +122,3 @@ const LoginForm = () => {
 }
 
 export default LoginForm
-

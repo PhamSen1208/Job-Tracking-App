@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState, useMemo } from "react"
 
 type User = {
     email: string
@@ -9,9 +9,12 @@ type AuthContextValue = {
     user: User | null
     isAuthenticated: boolean
     token: string | null
+    isLoading: boolean
+    error: string| null
     login: (email: string, password: string) => Promise<void>
     register: (email: string, password: string) => Promise<void>
     logout: () => void
+    clearError: () => void
 }
 
 //Kho dữ liệu chung lưu thông tin AuthContextValue
@@ -22,29 +25,30 @@ const STORAGE_KEY = "jobster_auth_user";
 //Bọc app và cung cấp AuthContext cho toàn bộ App
 //children : các component được bọc trong AuthProvider
 export const AuthProvider = ({children} : {children: React.ReactNode}) => {
-    const [user, setUser] = useState<User | null>(null) // lưu thông tin user hiện tại
-    const [token, setToken] = useState<string | null>(null);
-    const isAuthenticated = !!user && !!token // kiểm tra user đã đăng nhập hay chưa
 
-    //Load user từ localStorage khi app chạy => giữ trạng thái đăng nhập khi load trang
-    useEffect(() => {
+    //Lấy thông tin user từ localStorage khi app khởi động
+    const getInitialAuth = () => {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if(stored)
-        {
-            try {
-                const parsed = JSON.parse(stored);
-                setUser(parsed.user);
-                setToken(parsed.token);
-            } 
-            catch 
-            {
-                localStorage.removeItem(STORAGE_KEY);    
-            }
+        if (stored) {
+            try { 
+                return JSON.parse(stored); 
+            } catch 
+            { return null; }
         }
-    },[])
+        return null;
+    }
+    const initialAuth = getInitialAuth();
+    //Lưu thông tin user và token 
+    const [user, setUser] = useState<User | null>(initialAuth?.user || null)
+    const [token, setToken] = useState<string | null>(initialAuth?.token || null);
+    
+    const [isLoading, setIsLoading] = useState(false);
+    const [error,setError] = useState<string | null>(null);
+    const isAuthenticated = !!user && !!token
 
     //Cập nhật React State (setUser) và localStorage khi thay đổi user
     const persistAuth = (nextUser: User | null, nextToken: string | null) => {
+        //Cập nhật state
         setUser(nextUser);
         setToken(nextToken);
         if(nextUser && nextToken)
@@ -57,54 +61,78 @@ export const AuthProvider = ({children} : {children: React.ReactNode}) => {
         }
     }
 
-    const login = async(email: string, password: string) => {
-        if(password.length < 6)
-        {
-            throw new Error("Mật khẩu phải có ít nhất 6 ký tự");
+    const login = async(email: string, _password: string) => {
+        setError(null);
+        setIsLoading(true);
+        
+        try {
+            //Mô phỏng call API (test)
+            await new Promise(resolve => setTimeout(resolve,800));
+            const testToken = `test-token-login-${email}`;
+            persistAuth({email}, testToken);
+        } catch (err) {
+            const message = err instanceof Error ? err.message : "Đăng ký thất bại";
+            setError(message);
+            throw err;
         }
-
-        const testToken = `test-token-login-${email}`;
-        persistAuth({email},testToken);
+        finally
+        {
+            setIsLoading(false);
+        }
     }
 
-    const register = async(email: string, password: string) => {
-       if(password.length < 6)
-       {
-        throw new Error("Mật khẩu phải có ít nhất 6 ký tự")
-       }
-       const testToken = `test-token-login-${email}`;
-       persistAuth({email}, testToken);
+    const register = async(email: string, _password: string) => {
+       setError(null);
+       setIsLoading(true);
 
+        try {
+            await new Promise(resolve => setTimeout(resolve,800));
+            const testToken = `test-token-register-${email}`;
+            persistAuth({email}, testToken);
+       } catch (err) {
+            const message = err instanceof Error ? err.message: "Đăng ký thất bại";
+            setError(message);
+            throw err;
+       }
+        finally
+        {
+            setIsLoading(false);
+        }
     }
 
     const logout = () => {
-        persistAuth(null, null)
+        persistAuth(null, null);
+        setError(null);
     }
 
-    return (
-        <AuthContext.Provider
-          value={{
+    const clearError = () => setError(null)
+
+    //Sử dụng useMemo tránh tính lại không cần thiết
+    const value = useMemo(
+        () => ({
             user,
             isAuthenticated,
             token,
+            isLoading,
+            error,
             login,
             register,
             logout,
-          }}
-        >
-          {children}
-        </AuthContext.Provider>
+            clearError,
+        }),
+        [user, token, isLoading, error, isAuthenticated]
     )
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
  
 export const useAuth = () => {
-    const ctx = useContext(AuthContext);
+    const context = useContext(AuthContext);
 
-    if(!ctx)
+    if(!context)
     {
         throw new Error("useAuth phải được dùng trong AuthProvider");
     }
-    return ctx;
+    return context;
 }
 
 export default AuthContext

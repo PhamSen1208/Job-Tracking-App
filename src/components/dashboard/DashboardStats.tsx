@@ -1,8 +1,14 @@
 import pending from "../../assets/images/Pending.svg";
 import schedule from "../../assets/images/Schedule.svg";
 import reject from "../../assets/images/Reject.svg";
+import { useJobStats } from "../../hooks/useJobStats"
+import { useJobStore } from "../../store/useJobStore";
 
 const DashboardStats = () => {
+
+  const jobs = useJobStore(state => state.jobs)
+  const stats = useJobStats(jobs)
+
   return (
     <div className="grid gap-4 md:grid-cols-3">
       {/*Pending*/}
@@ -11,7 +17,7 @@ const DashboardStats = () => {
           Đang ứng tuyển
         </p>
         <div className="flex justify-between items-center px-4">
-          <p className="mt-2 text-5xl font-bold text-emerald-400">12</p>
+          <p className="mt-2 text-5xl font-bold text-emerald-400">{stats.pending}</p>
           <img 
             src={pending} 
             alt="job pending logo" 
@@ -26,7 +32,7 @@ const DashboardStats = () => {
           Đã lên lịch phỏng vấn
         </p>        
         <div className="flex justify-between items-center px-4">
-          <p className="mt-2 text-5xl font-bold text-emerald-400 hover:text-emerald-300 hover: cursor-pointer">02</p>
+          <p className="mt-2 text-5xl font-bold text-emerald-400 hover:text-emerald-300 hover: cursor-pointer">{stats.interview}</p>
           <img 
             src={schedule} 
             alt="job schedule logo" 
@@ -41,7 +47,7 @@ const DashboardStats = () => {
         </p>
         
         <div className="flex justify-between items-center px-4">
-          <p className="mt-2 text-5xl font-bold text-emerald-400">16</p>
+          <p className="mt-2 text-5xl font-bold text-emerald-400">{stats.reject}</p>
           <img 
             src={reject} 
             alt="job reject logo" 
