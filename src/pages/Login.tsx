@@ -14,7 +14,7 @@ const Login = () => {
             Chưa có tài khoản? {" "}
             <Link 
               to="/register"
-              className="font-bold text-emerald-500 hover:text-emerald-300">Đăng ký</Link>
+              className="font-bold text-emerald-500 hover:text-emerald-300 hover:cursor-pointer">Đăng ký</Link>
           </p>
         </AuthCard>
       </div>

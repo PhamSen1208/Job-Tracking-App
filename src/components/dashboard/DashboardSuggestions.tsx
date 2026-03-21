@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const DashboardSuggestions = () => {
   return (
     <aside className="space-y-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4">
@@ -15,9 +17,9 @@ const DashboardSuggestions = () => {
           <div className="h-full w-3/5 rounded-full bg-emerald-500" />
         </div>
       </div>
-      <button className="mt-2 w-full rounded-lg bg-emerald-500 px-3 py-2 text-xs font-medium text-slate-950 hover:bg-emerald-400 hover:cursor-pointer">
+      <Link to={"/profile"} className="flex items-center justify-center mx-auto md:w-1/2 mt-2 rounded-lg bg-emerald-500 px-3 py-2 text-xs font-medium text-slate-950 hover:bg-emerald-400 hover:cursor-pointer">
         Cập nhật hồ sơ ngay
-      </button>
+      </Link>
     </aside>
   );
 };

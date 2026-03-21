@@ -5,12 +5,15 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Jobs from './pages/Jobs'
 import AddJob from './pages/AddJob'
+import Board from './pages/Board'
 import JobDetail from './pages/JobDetail'
+import EditJob from './pages/EditJob'
 import Profile from './pages/Profile'
 import NotFound from './pages/NotFound'
 import HomeLayout from './layouts/HomeLayout'
 import DashBoardLayout from './layouts/DashBoardLayout'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import Schedule from './pages/Schedule'
 import { ToastContainer } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 
@@ -52,6 +55,15 @@ function App() {
             } 
           />
 
+          <Route
+            path="board"
+            element={
+              <ProtectedRoute>
+                <Board />
+              </ProtectedRoute>
+            } 
+          />
+
           <Route 
             path="jobs/:id" 
             element={
@@ -61,6 +73,24 @@ function App() {
             } 
           />
 
+          <Route 
+            path="jobs/edit/:id" 
+            element={
+              <ProtectedRoute>
+                <EditJob />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="schedule" 
+            element={
+              <ProtectedRoute>
+                <Schedule />
+              </ProtectedRoute>
+            } 
+          />
+            
           <Route 
             path="profile" 
             element={

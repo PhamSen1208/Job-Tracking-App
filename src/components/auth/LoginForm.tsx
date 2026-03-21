@@ -93,7 +93,7 @@ const LoginForm = () => {
       )}
 
       {/*Submit*/}
-      <Button type="submit" isLoading={isLoading} className="mt-2">
+      <Button type="submit" isLoading={isLoading} className="mt-2 hover:cursor-pointer">
         {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
       </Button>
 

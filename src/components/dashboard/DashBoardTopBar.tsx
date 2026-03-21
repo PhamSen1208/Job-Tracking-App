@@ -1,11 +1,15 @@
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import icon from "../../assets/images/icon.png"
+import { useJobStore } from "../../store/useJobStore";
 
 const DashBoardTopBar = () => {
   const { user, logout } = useAuth();
+  const jobs = useJobStore((state) => state.jobs);
+  const interviewJobsCount = jobs.filter(job => job.status === 'Interview').length;
 
   const linkBase =
-    "text-sm font-medium text-slate-300 hover:text-emerald-400 px-5 py-1";
+    "text-sm font-medium text-slate-300 hover:text-emerald-400 px-5 py-1 transition-all";
   const linkActive =
     "text-emerald-400 border-b-2 border-emerald-400 rounded-none";
 
@@ -15,8 +19,9 @@ const DashBoardTopBar = () => {
         <div>
             <Link
                 to="/dashboard"
-                className="text-2xl font-semibold text-emerald-500 hover:text-emerald-300">
-                JOBSTER
+                className="flex items-center gap-3">
+                <img src={icon} alt="icon" className="h-10 w-10" />
+                <span className="text-2xl font-semibold text-emerald-500 hover:text-emerald-300 tracking-tight">Sên Jobless</span>
             </Link>
         </div>
         <div className="flex items-center justify-between gap-8">
@@ -44,6 +49,28 @@ const DashBoardTopBar = () => {
                 }
             >
                 Thêm công việc
+            </NavLink>
+            <NavLink
+                to="/board"
+                className={({ isActive }) =>
+                `${linkBase} ${isActive ? linkActive : ""}`
+                }
+            >
+                Bảng công việc
+            </NavLink>
+            <NavLink
+                to="/schedule"
+                className={({ isActive }) =>
+                `${linkBase} ${isActive ? linkActive : ""} relative`
+                }
+            >
+                Lịch phỏng vấn
+                {interviewJobsCount > 0 && (
+                  <span className="absolute top-0 right-2 flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                  </span>
+                )}
             </NavLink>
             <NavLink
                 to="/profile"

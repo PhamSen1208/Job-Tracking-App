@@ -1,7 +1,9 @@
-import type { JobFormState } from "./form/useJobForm";
-import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave, FaUserTie, FaFlag, FaStar, FaBriefcase, FaAlignLeft} from "react-icons/fa";
+import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave, FaUserTie, FaFlag, FaStar, FaBriefcase, FaAlignLeft, FaUser, FaEnvelope, FaPhone } from "react-icons/fa";
 import mainlogo from "../../assets/images/mainlogo.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useJobStore } from "../../store/useJobStore";
+import { toast } from "react-toastify";
+import type { JobFormState } from "./form/useJobForm";
 
 // Tách component nhỏ cho từng phần
 function JobDetailHeader({ title, company }: { title: string; company: string }) {
@@ -79,7 +81,7 @@ function JobDetailInfo({ job }: { job: JobFormState }) {
 
 function JobDetailDescription({ description }: { description: string }) {
   return (
-    <div className="w-full">
+    <div className="w-full mb-8 mt-8">
       <h3 className="text-lg font-semibold text-slate-100 mb-3 flex items-center gap-2">
         <span className="h-4 w-1 bg-emerald-500 rounded-full"></span>
         Mô tả công việc
@@ -91,12 +93,57 @@ function JobDetailDescription({ description }: { description: string }) {
   );
 }
 
+function JobContactInfo({ job }: { job: JobFormState }) {
+  if (!job.contactName && !job.contactEmail && !job.contactPhone) return null;
+  
+  return (
+    <div className="w-full ">
+      <h3 className="text-lg font-semibold text-slate-100 mb-3 flex items-center gap-2">
+        <span className="h-4 w-1 bg-blue-500 rounded-full"></span>
+        Thông tin liên hệ (HR)
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-blue-500/5 border border-blue-500/20 rounded-xl p-5">
+        {job.contactName && (
+          <div className="flex items-center gap-3 justify-start">
+            <FaUser className="text-blue-400" />
+            <span className="text-sm text-slate-300">{job.contactName}</span>
+          </div>
+        )}
+        {job.contactEmail && (
+          <div className="flex items-center gap-3 justify-center">
+            <FaEnvelope className="text-blue-400" />
+            <span className="text-sm text-slate-300">{job.contactEmail}</span>
+          </div>
+        )}
+        {job.contactPhone && (
+          <div className="flex items-center gap-3 justify-end">
+            <FaPhone className="text-blue-400" />
+            <span className="text-sm text-slate-300">{job.contactPhone}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Main JobDetail component
-export default function JobInfo({ job }: { job: JobFormState }) {
+export default function JobInfo({ job }: { job: JobFormState & { id: number } }) {
+  const deleteJob = useJobStore(state => state.deleteJob);
+  const navigate = useNavigate();
+
+  const handleDelete = () => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa công việc này không?")) {
+      deleteJob(job.id);
+      navigate("/jobs");
+      toast.success("Đã xóa công việc thành công!");
+    }
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto bg-slate-900 rounded-2xl shadow-xl p-8 mt-12 border border-slate-800 flex flex-col items-start transition-all hover:border-slate-700/60">
       <JobDetailHeader title={job.title} company={job.company} />
       <JobDetailInfo job={job} />
+      <JobContactInfo job={job} />
       <JobDetailDescription description={job.description} />
 
       <div className="flex gap-4 mt-8 w-full border-t border-slate-700/50 pt-6 justify-between">
@@ -107,15 +154,21 @@ export default function JobInfo({ job }: { job: JobFormState }) {
         </Link>
 
         <div className="flex gap-4">
-          <button className="px-5 py-2.5 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500">
+          <button 
+            onClick={handleDelete}
+            className="px-5 py-2.5 rounded-lg bg-red-900/40 border border-red-800 hover:bg-red-800/60 text-red-200 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-red-500">
           Xóa
         </button>
-        <button className="px-5 py-2.5 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500">
+        <Link 
+          to={`/jobs/edit/${job.id}`}
+          className="px-5 py-2.5 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500">
           Cập nhật
-        </button>
-        <button className="px-6 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
-          Ứng tuyển ngay
-        </button>
+        </Link>
+        <Link 
+          to={"/profile"}
+          className="px-6 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
+            Ứng tuyển ngay
+        </Link>
         </div>
       </div>
     </div>

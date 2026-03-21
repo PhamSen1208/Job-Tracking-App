@@ -1,8 +1,19 @@
 @import "tailwindcss";
 
+html {
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
+body {
+  background-color: #020617;
+  color: #f8fafc;
+  min-height: 100vh;
+}
+
 @layer components{
   .align-element{
-      @apply mx-auto max-w-7xl px-8;
+      @apply mx-auto max-w-screen-2xl px-8;
   }
 
   .link-base{

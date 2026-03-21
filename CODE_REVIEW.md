@@ -75,4 +75,14 @@ Tạo thư mục src/components/ui và thêm các thành phần cơ bản:
 [MODIFY] src/components/jobs/form/JobForm.tsx: Connect hàm onSubmit vào action addJob của store để thêm công việc mới.
 [MODIFY] src/pages/AddJob.tsx (hoặc nơi chứa JobForm): Chuyển hướng về /jobs sau khi lưu thành công.
 
-
+1. Hoàn thiện "Mảnh ghép cuối" - Tính năng Cập nhật (Edit Job) 📝
+Cái còn thiếu: Nãy giờ mình làm Tạo / Đọc / Xóa (CRD) nhưng chưa có chữ U (Update - Sửa job). Hiện tại bạn có nút "Cập nhật" ở trang Detail nhưng nó chưa làm gì cả.
+Tiến trình: Tái sử dụng lại đúng cái trang "Thêm Job" lúc nãy thành giao diện "Sửa Job", rồi truyền dữ liệu cũ lên cho người dùng chỉnh lại ngày tháng/trạng thái (từ Pending -> Interview chẳng hạn).
+2. Trang Lịch Trình (Schedule/Calendar) 📅
+Mô tả: Nếu bạn nộp 20 công ty, làm sao nhớ ngày nào giờ nào phỏng vấn ai?
+Tiến trình: Tụi mình thiết kế thêm 1 màn hình Schedule, hiển thị các công việc có trạng thái "Interview" lên một tấm Lịch (hoặc luồng Timeline giống bảng Kanban) dựa hoàn toàn trên cái kho dữ liệu mạnh mẽ của Zustand.
+3. Ghép Biểu Đồ xịn sò cho Dashboard 📊
+Mô tả: Màn hình Tổng quan (Dashboard) hiện tại mới dừng ở mức khoe các con số. Nếu bạn muốn App có giao diện "triệu đô", tụi mình sẽ dùng thư viện Biểu đồ (Như recharts hoặc chart.js) để vẽ Biểu đồ hình Quạt (Bao nhiêu % Pass / Fail) và Biểu đồ đường. Các số liệu này chạy real-time lấy từ kho Zustand cực kỳ sướng mắt.
+4. Đóng móng vươn ra Backend (.NET Core C#) 🌐
+Mô tả: Nếu bạn nóng lòng muốn bắt tay vào luyện kĩ năng C# của mình và vứt cái kho Zustand tạm thời sắm vai Server đi, tụi mình sẽ bước sang giai đoạn cấu trúc API Gateway.
+Tiến trình: Tạo project .NET Web API riêng, học cách viết Middleware, JWT Authentication Token thực thụ và Entity Framework để đổ Csdl từ SQL Server qua Frontend thông qua Axios.

@@ -4,13 +4,14 @@ import TextAreaField from "./fields/TextAreaField";
 import { useFormValidation } from "../../../hooks/useFormValidation";
 import { INITIAL_JOB_FORM } from "./useJobForm";
 import type { JobFormState } from "./useJobForm";
-import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt, FaBriefcase, FaMoneyBillWave } from "react-icons/fa";
+import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt, FaBriefcase, FaMoneyBillWave, FaUser, FaEnvelope, FaPhone } from "react-icons/fa";
 import { FaSackXmark } from "react-icons/fa6";
-import { useJobStore } from "../../../store/useJobStore";
+import { Link } from "react-router-dom";
 
 type JobFormProps = {
   onSubmit?: (form: JobFormState) => void
-  isLoading?: boolean
+  isLoading?: boolean;
+  initialData?: JobFormState;
 }
 
 const jobValidationRules = {
@@ -20,20 +21,15 @@ const jobValidationRules = {
   date: (value: string) => !value ? "Ngày apply không được để trống" : null,
 }
 
-const JobForm = ({ onSubmit, isLoading = false }: JobFormProps) => {
+const JobForm = ({ onSubmit, isLoading = false, initialData }: JobFormProps) => {
 
-  const addJob = useJobStore((state) => state.addJob);
   const { form, errors, validate, handleChange, reset } = useFormValidation(
-    INITIAL_JOB_FORM,
+    initialData || INITIAL_JOB_FORM,
     jobValidationRules
   )
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validate()) return;
-
-    //lưu job vô form
-    addJob(form as any);
-    reset();
 
     if (onSubmit) {
       onSubmit(form)
@@ -118,6 +114,38 @@ const JobForm = ({ onSubmit, isLoading = false }: JobFormProps) => {
         </div>
 
         <div className="space-y-4">
+          <div className="p-4 rounded-xl border border-dashed border-slate-700 bg-slate-800/20 mb-2">
+              <h3 className="text-sm font-bold text-slate-300 mb-4 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  Thông tin người liên hệ (HR)
+              </h3>
+              <div className="space-y-4">
+                <TextField
+                  label="Tên người liên hệ"
+                  name="contactName"
+                  value={form.contactName}
+                  onChange={handleChange}
+                  placeholder="VD: Nguyễn Văn A"
+                  icon={<FaUser className="text-blue-400 text-sm" />}
+                />
+                <TextField
+                  label="Email liên hệ"
+                  name="contactEmail"
+                  value={form.contactEmail}
+                  onChange={handleChange}
+                  placeholder="VD: hr@company.com"
+                  icon={<FaEnvelope className="text-blue-400 text-sm" />}
+                />
+                <TextField
+                  label="Số điện thoại"
+                  name="contactPhone"
+                  value={form.contactPhone}
+                  onChange={handleChange}
+                  placeholder="VD: 0987xxx"
+                  icon={<FaPhone className="text-blue-400 text-sm" />}
+                />
+              </div>
+          </div>
           <div>
             <TextField
               label="Ngày apply"
@@ -185,6 +213,11 @@ const JobForm = ({ onSubmit, isLoading = false }: JobFormProps) => {
       </div>
 
       <div className="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-slate-700/50 mt-6">
+        <Link 
+          to="/jobs"
+          className="px-5 py-2.5 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500">
+            Trở về danh sách
+        </Link>
         <button
           type="button"
           onClick={reset}

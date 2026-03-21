@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { useJobs } from "../../hooks/useJobs"
+import { useJobStore } from "../../store/useJobStore";
 
 const DashboardJobs = () => {
-  const {jobs} = useJobs();
+  const {jobs} = useJobStore();
   //Lấy top 3 jobs
   const recentJobs = jobs.slice(0,3); 
   return (

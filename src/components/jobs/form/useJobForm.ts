@@ -12,6 +12,9 @@ export type JobFormState = {
   status:JobStatus;
   description:string;
   skills: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
 };
 
 export const INITIAL_JOB_FORM: JobFormState = {
@@ -25,6 +28,9 @@ export const INITIAL_JOB_FORM: JobFormState = {
   position:"Intern",
   status:"Pending",
   description:"",
-  skills: ""
+  skills: "",
+  contactName: "",
+  contactEmail: "",
+  contactPhone: ""
 };
 

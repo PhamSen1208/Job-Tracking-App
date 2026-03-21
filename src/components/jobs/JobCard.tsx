@@ -4,6 +4,9 @@ import date from "../../assets/images/date.svg";
 import { memo } from "react";
 import { STATUS_COLORS, TYPE_COLORS, POSITION_COLORS } from "../../constants/jobConstants"
 import type {JobStatus, JobType, JobPosition} from "../../constants/jobConstants"
+import { useJobStore } from "../../store/useJobStore";
+import { toast } from "react-toastify";
+
 
 export type Job = {
     id: number;
@@ -23,13 +26,23 @@ type JobCardProps = {
 }
 
 
+
 const JobCard = memo(({job}: JobCardProps ) => {
+    const deleteJob = useJobStore((state) => state.deleteJob);
+
+    const handleDelete = () => {
+        if (window.confirm("Bạn có chắc chắn muốn xóa công việc này không?")) {
+            deleteJob(job.id);
+            toast.success("Xóa công việc thành công");
+        }
+    };
+
     return (
         <article className="flex flex-col rounded border border-slate-800 bg-slate-900/60 shadow-sm">
 
             <div className="flex gap-4 px-6 py-4 border-slate-800 border-b">
                 <div className="flex h-14 w-14 items-center justify-center rounded bg-emerald-600 text-3xl font-semibold">
-                    {job.title.charAt(0)}
+                    {job.title.charAt(0).toUpperCase()}
                 </div>
                 <div className="justify-center flex flex-1 flex-col gap-2.5">
                     <h2 className="text-base font-semibold text-slate-50">
@@ -69,11 +82,18 @@ const JobCard = memo(({job}: JobCardProps ) => {
                 <Link 
                     to={`/jobs/${job.id}`}
                     className="rounded-lg bg-emerald-300/90 px-6 py-2 text-sm font-semibold text-emerald-900 hover:bg-emerald-600/90">
-                    Sửa
+                    Xem chi tiết
+                </Link>
+
+                <Link 
+                    to={`/jobs/edit/${job.id}`}
+                    className="rounded-lg bg-blue-300/90 px-6 py-2 text-sm font-semibold text-blue-900 hover:bg-blue-600/90">
+                    Cập nhật
                 </Link>
 
                 <button 
-                    className="rounded-lg bg-rose-300/90 px-6 py-2 text-sm font-semibold text-rose-900 hover:bg-rose-600/90">
+                    onClick={handleDelete}
+                    className="rounded-lg bg-rose-300/90 px-6 py-2 text-sm font-semibold text-rose-900 hover:bg-rose-600/90 hover:cursor-pointer">
                     Xóa
                 </button>
             </div>
