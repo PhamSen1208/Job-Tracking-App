@@ -34,20 +34,20 @@ export const useJobStore = create<JobStore>()(
             jobs: [
                 {
                     id: 1,
-                    title: "Frontend Developer",
-                    company: "FPT Software",
-                    location: "Hà Nội",
-                    experience: "Không yêu cầu",
-                    salary: "8.000.000đ",
-                    date: "2026-03-20",
+                    title: "",
+                    company: "",
+                    location: "",
+                    experience: "",
+                    salary: "",
+                    date: "",
                     type: "Full-time",
                     position: "Fresher",
                     status: "Pending",
-                    description: "Yêu cầu tốt nghiệp chuyên nghành CNTT...",
-                    skills: "HTML CSS NodeJS...",
-                    contactName: "Phạm Hồng Sơn",
-                    contactEmail: "sonph@fpt.com",
-                    contactPhone: "0123456789"
+                    description: "",
+                    skills: "",
+                    contactName: "",
+                    contactEmail: "",
+                    contactPhone: ""
                 }
             ],
             addJob: (newJob) => set((state) => ({

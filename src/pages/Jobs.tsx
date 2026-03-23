@@ -130,11 +130,11 @@ const Jobs = () => {
 
       {/* ĐIỀU KHIỂN PHÂN TRANG */}
       {totalPages > 1 && (
-        <div className="mt-12 flex justify-center items-center gap-2">
+        <div className="mt-12 flex justify-center items-center gap-2 mb-10">
             <button 
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(prev => prev - 1)}
-                className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-400 hover:bg-slate-800 disabled:opacity-20 transition-all"
+                className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-400 hover:bg-slate-800 disabled:opacity-20 transition-all hover: cursor-pointer"
             >
                 Trước
             </button>
@@ -143,7 +143,7 @@ const Jobs = () => {
                 <button
                     key={index + 1}
                     onClick={() => setCurrentPage(index + 1)}
-                    className={`w-10 h-10 rounded-lg font-bold transition-all ${
+                    className={`w-10 h-10 rounded-lg font-bold transition-all hover: cursor-pointer ${
                         currentPage === index + 1 
                         ? "bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20" 
                         : "bg-slate-900 text-slate-500 border border-slate-800 hover:bg-slate-800"

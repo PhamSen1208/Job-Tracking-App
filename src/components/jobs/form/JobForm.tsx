@@ -222,14 +222,14 @@ const JobForm = ({ onSubmit, isLoading = false, initialData }: JobFormProps) => 
           type="button"
           onClick={reset}
           disabled={isLoading}
-          className="rounded-lg border border-slate-700 px-5 py-2 text-sm font-medium text-slate-300 hover:border-slate-500 hover:bg-slate-800/60 transition-colors"
+          className="rounded-lg border border-slate-700 px-5 py-2 text-sm font-medium text-slate-300 hover:border-slate-500 hover:bg-slate-800/60 transition-colors hover:cursor-pointer"
         >
           Làm mới
         </button>
         <button
           type="submit"
           disabled={isLoading}
-          className="rounded-lg bg-emerald-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-colors"
+          className="rounded-lg bg-emerald-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-colors hover:cursor-pointer"
         >
           {isLoading ? "Đang lưu..." : "Lưu công việc"}
         </button>
