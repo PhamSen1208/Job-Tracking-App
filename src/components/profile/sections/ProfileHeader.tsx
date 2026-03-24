@@ -44,7 +44,7 @@ export const ProfileHeader = () => {
                 <p className="text-emerald-400 font-medium mt-1">{user.headline || "Chưa có định hướng"}</p>
 
                 {/* Contact info */}
-                <div className="flex flex-wrap gap-3 mt-3">
+                <div className="flex flex-wrap gap-10 mt-3">
                     {user.email && <span className="flex items-center gap-1.5 text-xs text-slate-400"><FaEnvelope/>{user.email}</span>}
                     {user.phone && <span className="flex items-center gap-1.5 text-xs text-slate-400"><FaPhone/>{user.phone}</span>}
                     {user.location && <span className="flex items-center gap-1.5 text-xs text-slate-400"><FaMapMarkerAlt/>{user.location}</span>}

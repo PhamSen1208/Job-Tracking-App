@@ -71,3 +71,40 @@ export default defineConfig([
   },
 ])
 ```
+appsettings.json (Cái Két sắt): Nơi cất giữ Mã bí mật (Key) của bạn. Chỉ có Server mới biết mã này để tạo và kiểm tra "Thẻ ra vào".
+
+Program.cs
+ (Kỹ sư trưởng): Người thiết lập các quy tắc cho toàn bộ hệ thống. Nó đọc mã bí mật từ cái Két sắt (appsettings.json) và dặn máy tính: "Khi có ai trình thẻ ra, hãy dùng mã này để kiểm tra xem thẻ thật hay giả".
+
+AuthController.cs
+ (Nơi cấp thẻ): Kiểm tra email/mật khẩu. Nếu đúng, nó sẽ dùng mã bí mật để in ra một cái Thẻ ra vào (Token) có ghi sẵn ID của người đó.
+
+JobsController.cs
+ (Phòng VIP): Là nơi chứa các chức năng (thêm, sửa, xóa công việc). Nó sẽ gọi người bảo vệ (Authorize) để kiểm soát thẻ trước khi cho vào.
+
+
+ Bước 1: Đăng nhập (Lấy thẻ)
+Bạn gửi Email và Mật khẩu đến AuthController.AuthController
+ kiểm tra trong Cơ sở dữ liệu. Nếu đúng, nó vào appsettings.json lấy cái Mã bí mật.
+Nó in ra một cái Token (Thẻ ra vào) có chứa số ID = 1 (ví dụ là ID của bạn).
+Server gửi cái Token này về máy bạn.
+Bước 2: Thêm một công việc (Dùng thẻ)
+Bạn nhấn "Thêm công việc" trên giao diện. Máy tính của bạn sẽ gửi thông tin công việc kèm theo cái Token đã nhận ở Bước 1 đến 
+
+JobsController
+.
+
+Program.cs
+ (Người bảo vệ) chặn lại ở cửa. Nó dùng Mã bí mật để quét cái Token đó.
+Nếu thẻ giả/hết hạn: Nó đuổi về ngay (Lỗi 401).
+Nếu thẻ thật: Nó đọc thấy ID = 1 trên thẻ và chuyển thông tin này cho 
+
+JobsController
+.
+
+JobsController
+ nhận lệnh. Nó tự lấy số ID = 1 đó để điền vào cột 
+
+UserId
+ trong bảng Công việc.
+Dữ liệu được lưu vào Database đúng tên của bạn.

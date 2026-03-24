@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useJobStore } from "../store/useJobStore";
 import JobForm from "../components/jobs/form/JobForm";
-import type { JobFormState } from "../components/jobs/form/useJobForm";
+import type { JobFormState } from "../hooks/useJobForm";
 import { toast } from "react-toastify";
 
 const EditJob = () => {

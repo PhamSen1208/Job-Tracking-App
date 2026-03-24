@@ -9,25 +9,30 @@ import { Button } from "../ui/Button";
 
 // Zod schema for registration validation
 const registerSchema = z.object({
+  //Email
   email: z.string().min(1, { message: "Email không được để trống" }).email({ message: "Email không đúng định dạng" }),
+  //Mật khẩu
   password: z
     .string()
     .min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" })
-    .regex(/[A-Za-z]/, { message: "Mật khẩu phải chứa chữ" })
+    .regex(/[A-Za-z]/, { message: "Mật khẩu phải chứa chữ cái" })
     .regex(/[0-9]/, { message: "Mật khẩu phải chứa số" })
     .regex(/[!@#$%^&*]/, { message: "Mật khẩu phải chứa ký tự đặc biệt (!@#$%^&*)" }),
   confirmPassword: z.string().min(1, { message: "Vui lòng xác nhận mật khẩu" }),
-}).refine((data) => data.password === data.confirmPassword, {
+  //Kiểm tra mật khẩu và xác nhận mật khẩu có khớp nhau không
+}).refine((data) => data.password === data.confirmPassword, { 
   message: "Mật khẩu xác nhận không khớp",
   path: ["confirmPassword"],
 });
-
+//Khai báo kiểu dữ liệu cho form
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const RegisterForm = () => {
+  //Lấy thông tin từ AuthContext 
   const { register: registerAuth, error, clearError, isLoading } = useAuth();
+  //Navigate để chuyển hướng trang
   const navigate = useNavigate();
-
+  //Sử dụng useForm để quản lý form
   const {
     register,
     handleSubmit,

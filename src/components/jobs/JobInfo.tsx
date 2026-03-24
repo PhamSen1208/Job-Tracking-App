@@ -3,7 +3,7 @@ import mainlogo from "../../assets/images/mainlogo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useJobStore } from "../../store/useJobStore";
 import { toast } from "react-toastify";
-import type { JobFormState } from "./form/useJobForm";
+import type { JobFormState } from "../../hooks/useJobForm";
 
 // Tách component nhỏ cho từng phần
 function JobDetailHeader({ title, company }: { title: string; company: string }) {

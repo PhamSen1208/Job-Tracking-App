@@ -85,7 +85,7 @@ export const ExperienceSection = () => {
                                 <p className="text-slate-500 text-xs mt-0.5 uppercase tracking-wider">{exp.duration}</p>
                             </div>
                             {/* Nút chỉ hiện khi hover */}
-                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ">
                                 <button onClick={() => handleOpenEdit(exp)} className="p-1.5 text-slate-500 hover:text-emerald-400"><FaPen size={11}/></button>
                                 <button onClick={() => deleteExperience(exp.id)} className="p-1.5 text-slate-500 hover:text-red-500"><FaTrash size={11}/></button>
                             </div>

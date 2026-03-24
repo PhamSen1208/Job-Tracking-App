@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useMemo } from "react"
+import { createContext, useContext, useState, useMemo } from "react"
 
 type User = {
     email: string
@@ -21,6 +21,20 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 const STORAGE_KEY = "jobster_auth_user";
+const USER_KEY = "jobter_register_user";
+
+//Lấy danh sách user đã đăng ký
+const getRegisterdUsers = (): {email: string, password: string}[] => {
+    try
+    {
+        //Lấy dữ liệu từ localStorage
+        return JSON.parse(localStorage.getItem(USER_KEY) || "[]");
+    }
+    catch
+    {
+        return [];
+    }
+}
 
 //Bọc app và cung cấp AuthContext cho toàn bộ App
 //children : các component được bọc trong AuthProvider
@@ -61,13 +75,19 @@ export const AuthProvider = ({children} : {children: React.ReactNode}) => {
         }
     }
 
-    const login = async(email: string, _password: string) => {
+    const login = async(email: string, password: string) => {
         setError(null);
         setIsLoading(true);
         
         try {
             //Mô phỏng call API (test)
             await new Promise(resolve => setTimeout(resolve,800));
+            const users = getRegisterdUsers();
+            //Kiểm tra user đã tồn tại chưa
+            if(!users.find((u) => u.email == email && u.password == password))
+            {
+                throw new Error("Email hoặc mật khẩu không chính xác");
+            }
             const testToken = `test-token-login-${email}`;
             persistAuth({email}, testToken);
         } catch (err) {
@@ -81,12 +101,20 @@ export const AuthProvider = ({children} : {children: React.ReactNode}) => {
         }
     }
 
-    const register = async(email: string, _password: string) => {
+    const register = async(email: string, password: string) => {
        setError(null);
        setIsLoading(true);
 
         try {
             await new Promise(resolve => setTimeout(resolve,800));
+            //Kiểm tra user đã tồn tại chưa
+            const users = getRegisterdUsers();
+            if(users.find((u) => u.email == email))
+            {
+                throw new Error("Email này đã được đăng ký");
+            }
+            //Lưu tài khoản mưới
+            localStorage.setItem(USER_KEY, JSON.stringify([...users, {email, password}]));
             const testToken = `test-token-register-${email}`;
             persistAuth({email}, testToken);
        } catch (err) {

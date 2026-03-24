@@ -86,3 +86,10 @@ Mô tả: Màn hình Tổng quan (Dashboard) hiện tại mới dừng ở mức
 4. Đóng móng vươn ra Backend (.NET Core C#) 🌐
 Mô tả: Nếu bạn nóng lòng muốn bắt tay vào luyện kĩ năng C# của mình và vứt cái kho Zustand tạm thời sắm vai Server đi, tụi mình sẽ bước sang giai đoạn cấu trúc API Gateway.
 Tiến trình: Tạo project .NET Web API riêng, học cách viết Middleware, JWT Authentication Token thực thụ và Entity Framework để đổ Csdl từ SQL Server qua Frontend thông qua Axios.
+
+Bước 1: Kiểm tra môi trường & Tạo project
+Bước 2: Thiết kế Database Schema
+Bước 3: Làm Auth (Register/Login + JWT)
+Bước 4: Làm các API (Jobs, Profile)
+Bước 5: Kết nối Frontend với Backend
+

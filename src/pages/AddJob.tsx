@@ -1,6 +1,6 @@
 import { useState } from "react";
 import JobForm from "../components/jobs/form/JobForm";
-import type { JobFormState } from "../components/jobs/form/useJobForm";
+import type { JobFormState } from "../hooks/useJobForm";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useJobStore } from "../store/useJobStore";

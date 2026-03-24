@@ -1,0 +1,6 @@
+@Jobster_HostAddress = http://localhost:5118
+
+GET {{Jobster_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
