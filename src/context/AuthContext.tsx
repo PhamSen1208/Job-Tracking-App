@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useMemo } from "react"
+const API_URL = import.meta.env.PROD ? "" : "http://localhost:5118";
 
 type User = {
     email: string
@@ -21,20 +22,6 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 const STORAGE_KEY = "jobster_auth_user";
-const USER_KEY = "jobter_register_user";
-
-//Lấy danh sách user đã đăng ký
-const getRegisterdUsers = (): {email: string, password: string}[] => {
-    try
-    {
-        //Lấy dữ liệu từ localStorage
-        return JSON.parse(localStorage.getItem(USER_KEY) || "[]");
-    }
-    catch
-    {
-        return [];
-    }
-}
 
 //Bọc app và cung cấp AuthContext cho toàn bộ App
 //children : các component được bọc trong AuthProvider
@@ -80,18 +67,27 @@ export const AuthProvider = ({children} : {children: React.ReactNode}) => {
         setIsLoading(true);
         
         try {
-            //Mô phỏng call API (test)
-            await new Promise(resolve => setTimeout(resolve,800));
-            const users = getRegisterdUsers();
-            //Kiểm tra user đã tồn tại chưa
-            if(!users.find((u) => u.email == email && u.password == password))
+            //Gọi API Login
+            const response = await fetch(`${API_URL}/api/auth/login`, {
+                method: "POST",
+                headers:{
+                    "Content-Type" : "application/json"},
+                body: JSON.stringify({email, password})
+            });
+
+            //Kiểm tra response có thành công không
+            if(!response.ok)
             {
-                throw new Error("Email hoặc mật khẩu không chính xác");
+                const errorData = await response.text();
+                throw new Error(errorData || "Đăng nhập thất bại");
             }
-            const testToken = `test-token-login-${email}`;
-            persistAuth({email}, testToken);
+            //Lấy dữ liệu trả về gồm token và thông tin user
+            const data = await response.json();
+
+            //Lưu thông tin user và token vào state và localStorage
+            persistAuth({email}, data.token);
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Đăng ký thất bại";
+            const message = err instanceof Error ? err.message : "Đăng nhập thất bại";
             setError(message);
             throw err;
         }
@@ -106,17 +102,21 @@ export const AuthProvider = ({children} : {children: React.ReactNode}) => {
        setIsLoading(true);
 
         try {
-            await new Promise(resolve => setTimeout(resolve,800));
-            //Kiểm tra user đã tồn tại chưa
-            const users = getRegisterdUsers();
-            if(users.find((u) => u.email == email))
+            const response = await fetch(`${API_URL}/api/auth/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({email, password})
+            });
+
+            if(!response.ok)
             {
-                throw new Error("Email này đã được đăng ký");
+                const errorData = await response.text();
+                throw new Error(errorData || "Đăng ký thất bại");
             }
-            //Lưu tài khoản mưới
-            localStorage.setItem(USER_KEY, JSON.stringify([...users, {email, password}]));
-            const testToken = `test-token-register-${email}`;
-            persistAuth({email}, testToken);
+            const data = await response.json();
+            persistAuth({email}, data.token);
        } catch (err) {
             const message = err instanceof Error ? err.message: "Đăng ký thất bại";
             setError(message);

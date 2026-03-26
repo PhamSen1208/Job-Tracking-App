@@ -44,7 +44,7 @@ const About = () => {
                 <div className="bg-slate-900/40 p-1 rounded-xl border border-slate-800 shadow-2xl overflow-hidden group">
                     <div className="aspect-video bg-linear-to-br rounded-xl from-emerald-500/20 to-blue-500/20 flex items-center justify-center p-8 ">
                          <div className="text-center">
-                            <div className="text-5xl mb-4">🚀</div>
+                            <div className="text-5xl mb-4">🔥</div>
                             <h3 className="text-xl font-bold text-emerald-400 mb-2">Sẵn sàng để bắt đầu?</h3>
                             <p className="text-slate-400 text-sm max-w-xs mx-auto italic">"Cơ hội chỉ đến với những ai đã sẵn sàng."</p>
                          </div>

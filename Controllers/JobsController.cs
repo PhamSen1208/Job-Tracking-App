@@ -3,8 +3,9 @@ using Jobster.Data;
 using Jobster.Models;
 using Jobster.Dtos;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 
 namespace Jobster.Controllers
 {
@@ -44,9 +45,9 @@ namespace Jobster.Controllers
                 Status = jobDto.Status,
                 Position = jobDto.Position,
                 Type = jobDto.Type,
-                ContactName = jobDto.ContactName,
-                ContactEmail = jobDto.ContactEmail,
-                ContactPhone = jobDto.ContactPhone,
+                ContactName = jobDto.Contact.Name,
+                ContactEmail = jobDto.Contact.Email,
+                ContactPhone = jobDto.Contact.Phone,
                 Description = jobDto.Description,
         
                 // Luôn luôn lấy UserId từ Token để đảm bảo an toàn
@@ -99,9 +100,9 @@ namespace Jobster.Controllers
                 Status = jobDto.Status,
                 Position = jobDto.Position,
                 Type = jobDto.Type,
-                ContactName = jobDto.ContactName,
-                ContactEmail = jobDto.ContactEmail,
-                ContactPhone = jobDto.ContactPhone,
+                ContactName = jobDto.Contact.Name,
+                ContactEmail = jobDto.Contact.Email,
+                ContactPhone = jobDto.Contact.Phone,
                 Description = jobDto.Description,
                 
                 UserId = GetUserId(),
@@ -147,7 +148,7 @@ namespace Jobster.Controllers
 
         private int GetUserId()
         {
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 throw new UnauthorizedAccessException("Không tìm thấy ID người dùng trong token");

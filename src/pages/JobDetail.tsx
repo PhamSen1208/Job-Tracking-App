@@ -1,4 +1,4 @@
-import JobInfo from "../components/jobs/JobInfo"
+import JobInfo from "../components/jobs/JobInfo";
 import { useParams, Link } from "react-router-dom";
 import { useJobStore } from "../store/useJobStore";
 

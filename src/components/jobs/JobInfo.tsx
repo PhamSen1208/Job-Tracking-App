@@ -1,176 +1,176 @@
-import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave, FaUserTie, FaFlag, FaStar, FaBriefcase, FaAlignLeft, FaUser, FaEnvelope, FaPhone } from "react-icons/fa";
-import mainlogo from "../../assets/images/mainlogo.svg";
-import { Link, useNavigate } from "react-router-dom";
-import { useJobStore } from "../../store/useJobStore";
-import { toast } from "react-toastify";
-import type { JobFormState } from "../../hooks/useJobForm";
+import type { Job } from "../../store/useJobStore";
+import { 
+    FaBuilding, FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave, 
+    FaBriefcase, FaEnvelope, FaPhone, FaUserTie, FaCheckCircle, 
+    FaClock, FaTimesCircle, FaTags, FaLayerGroup, FaTimes
+} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-// Tách component nhỏ cho từng phần
-function JobDetailHeader({ title, company }: { title: string; company: string }) {
-  return (
-    <div className="flex items-center gap-6 border-b border-slate-700/50 pb-6 mb-6 w-full">
-      <div className="h-20 w-20 rounded-xl bg-slate-800 border border-slate-700/50 flex items-center justify-center shadow-sm overflow-hidden p-2">
-        <img src={mainlogo} alt={company || "Company Logo"} className="object-contain w-full h-full" />
-      </div>
-      <div>
-        <h2 className="text-2xl font-bold text-slate-100 mb-1 tracking-tight">{title}</h2>
-        <div className="text-slate-400 text-base font-medium flex items-center gap-2">
-          <FaBuilding className="text-slate-500" /> {company}
-        </div>
-      </div>
-    </div>
-  );
+interface JobInfoProps {
+    job: Job;
 }
 
-function JobDetailInfo({ job }: { job: JobFormState }) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 w-full">
-
-      <div className="flex items-center gap-3 text-base text-slate-300 py-2 border-b border-slate-800/50">
-        <span className="p-2 bg-slate-800/50 rounded-lg">
-          <FaMapMarkerAlt className="text-emerald-500" />
-        </span>
-        <span className="truncate text-sm">Địa điểm: {job.location}</span>
-      </div>
-
-      <div className="flex items-center gap-3 text-base text-slate-300 py-2 border-b border-slate-800/50">
-        <span className="p-2 bg-slate-800/50 rounded-lg">
-          <FaCalendarAlt className="text-blue-500" />
-        </span>
-        <span className="text-sm">Ngày nộp: {job.date}</span>
-      </div>
-
-      <div className="flex items-center justify-between gap-3 text-base text-slate-300 py-2 border-b border-slate-800/50">
-        <div className="flex items-center gap-3">
-          <span className="p-2 bg-slate-800/50 rounded-lg"><FaUserTie className="text-purple-500" /></span>
-          <span className="font-medium text-slate-200">Hình thức: {job.type}</span>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3 text-base text-slate-300 py-2 border-b border-slate-800/50">
-        <span className="p-2 bg-slate-800/50 rounded-lg"><FaMoneyBillWave className="text-green-500" /></span>
-        <span className="font-medium text-emerald-400">Tiền lương: {job.salary}</span>
-      </div>
-
-      <div className="flex items-center gap-3 text-base text-slate-300 py-2 border-b border-slate-800/50">
-        <span className="p-2 bg-slate-800/50 rounded-lg"><FaStar className="text-yellow-500" /></span>
-        <span className="font-medium text-slate-200">Kỹ năng: {job.skills}</span>
-      </div>
-
-      <div className="flex items-center gap-3 text-base text-slate-300 py-2 border-b border-slate-800/50">
-        <span className="p-2 bg-slate-800/50 rounded-lg"><FaFlag className="text-orange-500" /></span>
-        <span className="rounded-md border border-slate-700/60 bg-slate-800/40 px-2.5 py-1 text-xs font-semibold text-slate-300 tracking-wide">
-          Trạng thái: {job.status}
-        </span>
-      </div>
-
-      <div className="flex items-center justify-between gap-3 text-base text-slate-300 py-2 border-b border-slate-800/50">
-        <div className="flex items-center gap-3">
-          <span className="p-2 bg-slate-800/50 rounded-lg"><FaBriefcase className="text-pink-500" /></span>
-          <span className="font-medium text-slate-200">Vị trí ứng tuyển: {job.position}</span>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3 text-base text-slate-300 py-2 border-b border-slate-800/50">
-        <span className="p-2 bg-slate-800/50 rounded-lg"><FaAlignLeft/></span>
-        <span className="font-medium">Kinh nghiệm: {job.experience}</span>
-      </div>
-    </div>
-  );
-}
-
-function JobDetailDescription({ description }: { description: string }) {
-  return (
-    <div className="w-full mb-8 mt-8">
-      <h3 className="text-lg font-semibold text-slate-100 mb-3 flex items-center gap-2">
-        <span className="h-4 w-1 bg-emerald-500 rounded-full"></span>
-        Mô tả công việc
-      </h3>
-      <div className="text-slate-300 whitespace-pre-line text-sm md:text-base leading-relaxed bg-slate-800/30 border border-slate-700/50 rounded-xl p-5">
-        {description}
-      </div>
-    </div>
-  );
-}
-
-function JobContactInfo({ job }: { job: JobFormState }) {
-  if (!job.contactName && !job.contactEmail && !job.contactPhone) return null;
-  
-  return (
-    <div className="w-full ">
-      <h3 className="text-lg font-semibold text-slate-100 mb-3 flex items-center gap-2">
-        <span className="h-4 w-1 bg-blue-500 rounded-full"></span>
-        Thông tin liên hệ (HR)
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-blue-500/5 border border-blue-500/20 rounded-xl p-5">
-        {job.contactName && (
-          <div className="flex items-center gap-3 justify-start">
-            <FaUser className="text-blue-400" />
-            <span className="text-sm text-slate-300">{job.contactName}</span>
-          </div>
-        )}
-        {job.contactEmail && (
-          <div className="flex items-center gap-3 justify-center">
-            <FaEnvelope className="text-blue-400" />
-            <span className="text-sm text-slate-300">{job.contactEmail}</span>
-          </div>
-        )}
-        {job.contactPhone && (
-          <div className="flex items-center gap-3 justify-end">
-            <FaPhone className="text-blue-400" />
-            <span className="text-sm text-slate-300">{job.contactPhone}</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Main JobDetail component
-export default function JobInfo({ job }: { job: JobFormState & { id: number } }) {
-  const deleteJob = useJobStore(state => state.deleteJob);
-  const navigate = useNavigate();
-
-  const handleDelete = () => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa công việc này không?")) {
-      deleteJob(job.id);
-      navigate("/jobs");
-      toast.success("Đã xóa công việc thành công!");
+const getStatusColor = (status: Job["status"]) => {
+    switch (status) {
+        case "Interview": return "bg-blue-500/10 text-blue-400 border-blue-500/20";
+        case "Pending": return "bg-amber-500/10 text-amber-400 border-amber-500/20";
+        case "Reject": return "bg-rose-500/10 text-rose-400 border-rose-500/20";
+        default: return "bg-slate-500/10 text-slate-400 border-slate-500/20";
     }
-  };
+};
 
-  return (
-    <div className="w-full max-w-4xl mx-auto bg-slate-900 rounded-2xl shadow-xl p-8 mt-12 border border-slate-800 flex flex-col items-start transition-all hover:border-slate-700/60">
-      <JobDetailHeader title={job.title} company={job.company} />
-      <JobDetailInfo job={job} />
-      <JobContactInfo job={job} />
-      <JobDetailDescription description={job.description} />
-
-      <div className="flex gap-4 mt-8 w-full border-t border-slate-700/50 pt-6 justify-between">
-        <Link 
-          to="/jobs"
-          className="px-5 py-2.5 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500">
-            Trở về danh sách
-        </Link>
-
-        <div className="flex gap-4">
-          <button 
-            onClick={handleDelete}
-            className="px-5 py-2.5 rounded-lg bg-red-900/40 border border-red-800 hover:bg-red-800/60 text-red-200 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-red-500">
-          Xóa
-        </button>
-        <Link 
-          to={`/jobs/edit/${job.id}`}
-          className="px-5 py-2.5 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500">
-          Cập nhật
-        </Link>
-        <Link 
-          to={"/profile"}
-          className="px-6 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
-            Ứng tuyển ngay
-        </Link>
-        </div>
-      </div>
-    </div>
-  );
+const getStatusIcon = (status: Job["status"]) => {
+    switch (status) {
+        case "Interview": return <FaUserTie />;
+        case "Pending": return <FaClock />;
+        case "Reject": return <FaTimesCircle />;
+        default: return <FaCheckCircle />;
+    }
 }
+
+const JobInfo = ({ job }: JobInfoProps) => {
+    const navigate = useNavigate();
+
+    return (
+        <div className="relative w-full max-w-4xl bg-slate-900/40 border border-slate-800 p-8 rounded-3xl shadow-2xl backdrop-blur-xl transition-all hover:border-slate-700/50">
+            {/* Close Button */}
+            <button 
+                onClick={() => navigate('/jobs')}
+                className="absolute top-6 right-6 p-2 rounded-full bg-slate-800/50 text-slate-400 hover:text-rose-500 hover:bg-rose-500/20 transition-all z-10"
+                title="Đóng"
+            >
+                <FaTimes size={18} />
+            </button>
+
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-slate-800/50 pb-8 pt-2">
+                <div>
+                    <h1 className="text-3xl font-bold text-slate-50 tracking-tight mb-2">
+                        {job.title}
+                    </h1>
+                    <div className="flex flex-wrap items-center gap-4 text-slate-400">
+                        <span className="flex items-center gap-2 hover:text-emerald-400 transition-colors">
+                            <FaBuilding className="text-emerald-500" />
+                            {job.company}
+                        </span>
+                        <span className="flex items-center gap-2">
+                            <FaMapMarkerAlt className="text-emerald-500" />
+                            {job.location}
+                        </span>
+                        <span className="flex items-center gap-2">
+                            <FaCalendarAlt className="text-emerald-500" />
+                            Ngày nộp: {new Date(job.date).toLocaleDateString("vi-VN")}
+                        </span>
+                    </div>
+                </div>
+
+                <div className={`flex items-center gap-2 px-4 py-2 rounded-full border ${getStatusColor(job.status)}`}>
+                    {getStatusIcon(job.status)}
+                    <span className="font-medium">{job.status}</span>
+                </div>
+            </div>
+
+            {/* Main Info Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div className="space-y-6">
+                    <div>
+                        <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-3">Thông tin chung</h3>
+                        <div className="bg-slate-950/50 rounded-2xl p-4 border border-slate-800 space-y-4">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                                    <FaMoneyBillWave />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-400">Mức lương</p>
+                                    <p className="font-semibold text-slate-200">{job.salary}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400">
+                                    <FaBriefcase />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-400">Kinh nghiệm</p>
+                                    <p className="font-semibold text-slate-200">{job.experience}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-3">Chi tiết công việc</h3>
+                        <div className="flex flex-wrap gap-2">
+                            <span className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg text-sm border border-slate-700">
+                                <FaLayerGroup className="text-purple-400" />
+                                {job.type}
+                            </span>
+                            <span className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg text-sm border border-slate-700">
+                                <FaTags className="text-amber-400" />
+                                {job.position}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-6">
+                    <div>
+                        <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-3">Mô tả công việc</h3>
+                        <div className="bg-slate-950/50 rounded-2xl p-5 border border-slate-800 prose prose-invert max-w-none hover:border-slate-700 transition-colors">
+                            <p className="text-slate-300 whitespace-pre-line leading-relaxed text-sm">
+                                {job.description || "Chưa có mô tả chi tiết cho công việc này."}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-3">Kỹ năng yêu cầu</h3>
+                        <div className="flex flex-wrap gap-2">
+                            {job.skills ? job.skills.split(',').map((skill, index) => (
+                                <span key={index} className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-sm font-medium">
+                                    {skill.trim()}
+                                </span>
+                            )) : (
+                                <span className="text-slate-500 text-sm italic">Không có yêu cầu kỹ năng cụ thể</span>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Contact Section */}
+            {(job.contactName || job.contactEmail || job.contactPhone) && (
+                <div className="mt-8 pt-8 border-t border-slate-800/50">
+                    <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-4">Thông tin liên hệ</h3>
+                    <div className="flex flex-wrap gap-6 bg-slate-950/30 p-5 rounded-2xl border border-slate-800/80">
+                        {job.contactName && (
+                            <div className="flex items-center gap-3 text-slate-300">
+                                <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400">
+                                    <FaUserTie size={14} />
+                                </div>
+                                <span className="text-sm font-medium">{job.contactName}</span>
+                            </div>
+                        )}
+                        {job.contactEmail && (
+                            <div className="flex items-center gap-3 text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                                <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                                    <FaEnvelope size={14} />
+                                </div>
+                                <span className="text-sm font-medium">{job.contactEmail}</span>
+                            </div>
+                        )}
+                        {job.contactPhone && (
+                            <div className="flex items-center gap-3 text-slate-300 hover:text-blue-400 transition-colors cursor-pointer">
+                                <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400">
+                                    <FaPhone size={14} />
+                                </div>
+                                <span className="text-sm font-medium">{job.contactPhone}</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default JobInfo;

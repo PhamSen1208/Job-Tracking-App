@@ -13,13 +13,15 @@ var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
 
 //Cấu hình dịch vụ Authentication
-builder.Services.AddAuthentication(options => { 
+builder.Services.AddAuthentication(options =>
+{
     //Dùng JwtBearer để xác thực token 
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 // Thêm JwtBearer vào pipeline
-.AddJwtBearer(options => {
+.AddJwtBearer(options =>
+{
     // Cấu hình các tham số xác thực token
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -74,13 +76,14 @@ builder.Services.AddControllers();
 
 // Đăng ký Database: Kết nối với SQL Server theo địa chỉ trong appsettings.json
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 // Cấu hình CORS tạo cầu nối giữa Backend và Frontend
-builder.Services.AddCors(option => {
-    option.AddPolicy("AllowFrontend", 
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("AllowFrontend",
     policy => policy.WithOrigins("http://localhost:5173").AllowAnyMethod().AllowAnyHeader());
 });
 
@@ -107,6 +110,11 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

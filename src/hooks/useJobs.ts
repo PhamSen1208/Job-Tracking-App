@@ -1,74 +1,38 @@
 import type { Job } from "../components/jobs/JobCard";
 import { useState, useCallback, useEffect } from "react"
+import { useAuth } from "../context/AuthContext";
 
 // Quản lý joblist
 
 export const useJobs = () => {
+    const {token} = useAuth();
     const [jobs, setJobs] = useState<Job[]>([]);
     const [isError, setIsError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const API_URL = import.meta.env.PROD ? "" : "http://localhost:5118";
 
+
+    //Lấy danh sách công việc
     const fetchJobs = useCallback(async () => {
         setIsLoading(true);
         setIsError(null);
 
         try {
-             // const response = await fetch('/api/jobs')
-            // const data = await response.json()
-            // setJobs(data)
-            
-            // Mock data for now
-            const mockJobs: Job[] = [
-                {
-                    id: 1,
-                    title: "Frontend Developer",
-                    company: "Công ty A",
-                    location: "Hà Nội",
-                    experience: "2+ năm",
-                    salary: "20-25M",
-                    date: "2024-01-15",
-                    type: "Full-time",
-                    position: "Junior",
-                    status: "Interview",
-                },
-                {
-                    id: 2,
-                    title: "Backend Developer",
-                    company: "Công ty B",
-                    location: "Hà Nội",
-                    experience: "1+ năm",
-                    salary: "20-25M",
-                    date: "2024-01-15",
-                    type: "Full-time",
-                    position: "Junior",
-                    status: "Interview",
-                },
-                {
-                    id: 3,
-                    title: "FullStack Developer",
-                    company: "Công ty C",
-                    location: "Hà Nội",
-                    experience: "không kinh nghiệm",
-                    salary: "10-15M",
-                    date: "2024-01-15",
-                    type: "Full-time",
-                    position: "Fresher",
-                    status: "Interview",
-                },
-                {
-                    id: 4,
-                    title: "Frontend Developer",
-                    company: "Công ty A",
-                    location: "Hà Nội",
-                    experience: "2+ năm",
-                    salary: "20-25M",
-                    date: "2024-01-15",
-                    type: "Full-time",
-                    position: "Junior",
-                    status: "Interview",
-                },
-            ]
-            setJobs(mockJobs);
+             const response = await fetch(`${API_URL}/api/jobs`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+             });
+
+             if(!response.ok)
+             {
+                throw Error("Không thể tải danh sách công việc");
+             }
+
+             const data = await response.json();
+             setJobs(data);
         } catch (error) {
             setIsError(error instanceof Error ? error.message: "Lỗi tải Job");
         }
@@ -76,25 +40,83 @@ export const useJobs = () => {
         {
             setIsLoading(false);
         }
-    },[]);
+    },[token]);
 
     useEffect(() => {
         fetchJobs();
     }, [fetchJobs]);
 
-    const addJob = useCallback((newJob: Job) => {
-        setJobs(prev => [newJob, ...prev])
-    }, [])
+    //Thêm công việc
+    const addJob = useCallback(async (newJob: Omit<Job, 'id'>) => {
+        try
+        {
+            const response = await fetch(`${API_URL}/api/jobs`, {
+                method: "POST",
+                headers: {
+                 "Content-Type" : "application/json",
+                 "Authorization" : `Bearer ${token}`  
+                },
+                body: JSON.stringify(newJob)
+            });
+            if(!response.ok)
+            {
+                throw new Error("Không thể thêm công việc");
+            }
 
-    const updateJob = useCallback((jobId: number, updates: Partial<Job>) => {
-        setJobs(prev => prev.map(job =>
-            job.id === jobId ? { ...job, ...updates } : job
-        ))
-    }, [])
+            const savedJob = await response.json();
+            setJobs(prev => [savedJob,...prev]);
+        }
+        catch(error)
+        {
+            setIsError(error instanceof Error ? error.message: "Lỗi thêm Job");
+            throw error;
+        }
+        
+    }, [token]);
 
-    const deleteJob = useCallback((jobId: number) => {
-        setJobs(prev => prev.filter(job => job.id !== jobId))
-    }, [])
+    //Cập nhật công việc
+    const updateJob = useCallback(async (jobId: number, updates: Partial<Job>) => {
+        try {
+            const response = await fetch(`${API_URL}/api/jobs/${jobId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type" : "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({...updates, id: jobId})
+            });
+
+            if(!response.ok)
+            {
+                throw new Error("Không thể thêm công việc");
+            }
+            //Cập nhật lại state jobs
+            setJobs(prev => prev.map((job) => job.id == jobId ? {...job,...updates}: job));
+        } catch (error) {
+            setIsError(error instanceof Error ? error.message: "Lỗi cập nhật Job");
+            throw error;
+        }
+    }, [token])
+
+    //Xóa công việ
+    const deleteJob = useCallback(async (jobId: number) => {
+        try {
+            const response = await fetch(`${API_URL}/api/jobs/${jobId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization" : `Bearer ${token}`
+                },
+            });
+            if(!response.ok)
+            {
+                throw new Error("Không thể xóa công việc");
+            }
+            setJobs(prev => prev.filter((job) => job.id !== jobId));
+        } catch (error) {
+            setIsError(error instanceof Error ? error.message: "Lỗi xóa Job");
+            throw error;
+        }
+    }, [token])
 
     return { jobs, isLoading,  isError,fetchJobs, addJob, updateJob, deleteJob }
 }

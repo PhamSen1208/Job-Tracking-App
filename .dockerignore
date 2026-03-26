@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-ssr/
+build/
+wwwroot/
+bin/
+obj/
+out/
+.git/
+.vs/
+.vscode/
+.env.*

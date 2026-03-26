@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Jobster")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+86bab097d6e5a3bc8a77f98886924a707ba6eca6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dd864eaa8a1a1551b3c866d2950fa2f28216d3c4")]
 [assembly: System.Reflection.AssemblyProductAttribute("Jobster")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Jobster")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

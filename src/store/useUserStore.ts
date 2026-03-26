@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+const API_URL = import.meta.env.PROD ? "" : "http://localhost:5118";
+
+
 interface Project {
     id: string;
     name: string;
@@ -54,11 +57,15 @@ interface UserStore {
     addProject: (project: Omit<Project, 'id'>) => void;
     updateProject: (id: string, project: Partial<Project>) => void;
     deleteProject: (id: string) => void;
-}
+
+    //fetch
+    fetchProfile: (token: string) => Promise<void>;
+    saveProfile: (token: string) => Promise<void>;
+};
 
 export const useUserStore = create<UserStore>()(
-    persist(
-        (set) => ({
+    persist<UserStore>(
+        (set, get) => ({
             user: {
                 firstName: "",
                 lastName: "",
@@ -150,12 +157,45 @@ export const useUserStore = create<UserStore>()(
             deleteProject: (id) => set((state) => ({
                 user: { ...state.user, projects: state.user.projects.filter(p => p.id !== id) }
             })),
-        }), {
-        name: "user-storage",
-        merge: (persisted: any, current) => ({
-            ...current,
-            user: { ...current.user, ...persisted.user }
+
+            fetchProfile: async (token: string) => {
+                const response = await fetch(`${API_URL}/api/profile`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+                if(!response.ok)
+                {
+                    throw new Error("Không thể tải profile");
+                }
+                const data = await response.json();
+                set({ user: data });
+            },
+            
+            saveProfile: async (token: string) => {
+                const { user } = get(); 
+                const response = await fetch (`${API_URL}/api/profile`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(user)
+                });
+                if(!response.ok)
+                {
+                    throw new Error("Không thể lưu profile");
+                }
+            }
         }),
-    }
+        
+        {
+            name: "user-storage",
+            merge: (persisted: any, current) => ({
+            ...current,
+            user: { ...current.user, ...persisted.user }}),
+        }
     )
 );
+
