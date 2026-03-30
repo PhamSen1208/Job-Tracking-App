@@ -13,7 +13,7 @@ namespace Jobster.Models
         [Required]
         public string PasswordHash { get; set; } = string.Empty;
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation property
         public Profile? Profile { get; set; }
