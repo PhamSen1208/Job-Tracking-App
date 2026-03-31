@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
 
+
 // Cấu hình dịch vụ Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -71,8 +72,13 @@ builder.Services.AddEndpointsApiExplorer();
 // Cấu hình CORS - Cho phép linh hoạt để tránh lỗi trên Render
 builder.Services.AddCors(option =>
 {
-    option.AddPolicy("AllowAll",
-    policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    option.AddPolicy("AllowSpecific", policy =>
+        policy.WithOrigins(
+                builder.Configuration
+                       .GetSection("AllowedOrigins")
+                       .Get<string[]>()!)
+              .AllowAnyMethod()
+              .AllowAnyHeader());
 });
 
 builder.Services.AddControllers()
