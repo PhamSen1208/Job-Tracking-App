@@ -123,7 +123,7 @@ else
     // app.UseHttpsRedirection();
 }
 
-app.UseCors("AllowAll");
+app.UseCors("AllowSpecific");
 app.UseAuthentication();
 app.UseAuthorization();
 
