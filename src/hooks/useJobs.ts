@@ -88,10 +88,10 @@ export const useJobs = () => {
 
             if(!response.ok)
             {
-                throw new Error("Không thể thêm công việc");
+                throw new Error("Không thể cập nhật công việc");
             }
             //Cập nhật lại state jobs
-            setJobs(prev => prev.map((job) => job.id == jobId ? {...job,...updates}: job));
+            setJobs(prev => prev.map((job) => job.id === jobId ? {...job,...updates}: job));
         } catch (error) {
             setIsError(error instanceof Error ? error.message: "Lỗi cập nhật Job");
             throw error;
