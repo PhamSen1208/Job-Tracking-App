@@ -1,4 +1,4 @@
-import type { Job } from "../../store/useJobStore";
+import type { Job, JobHistory } from "./JobCard";
 import { 
     FaBuilding, FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave, 
     FaBriefcase, FaEnvelope, FaPhone, FaUserTie, FaCheckCircle, 
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 interface JobInfoProps {
     job: Job;
+    histories: JobHistory[];
 }
 
 const getStatusColor = (status: Job["status"]) => {
@@ -28,7 +29,7 @@ const getStatusIcon = (status: Job["status"]) => {
     }
 }
 
-const JobInfo = ({ job }: JobInfoProps) => {
+const JobInfo = ({ job, histories }: JobInfoProps) => {
     const navigate = useNavigate();
 
     return (
@@ -36,7 +37,7 @@ const JobInfo = ({ job }: JobInfoProps) => {
             {/* Close Button */}
             <button 
                 onClick={() => navigate('/jobs')}
-                className="absolute top-6 right-6 p-2 rounded-full bg-slate-800/50 text-slate-400 hover:text-rose-500 hover:bg-rose-500/20 transition-all z-10"
+                className="absolute top-1 right-1 p-2 rounded-full bg-slate-800/50 text-slate-400 hover:text-rose-500 hover:bg-rose-500/20 transition-all z-10"
                 title="Đóng"
             >
                 <FaTimes size={18} />
@@ -136,6 +137,44 @@ const JobInfo = ({ job }: JobInfoProps) => {
                     </div>
                 </div>
             </div>
+            {/* 5. Thêm phần Lịch sử thay đổi (History) */}
+            <div className="mt-8 pt-8 border-t border-slate-800/50">
+                <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-6 flex items-center gap-2">
+                    <FaClock className="text-emerald-500" />
+                    Lịch sử trạng thái
+                </h3>
+                
+                {histories && histories.length > 0 ? (
+                    <div className="relative border-l border-slate-700/50 ml-4 space-y-6">
+                        {histories.map((history, idx) => (
+                            <div key={idx} className="relative pl-6">
+                                {/* Dấu chấm trên trục thời gian */}
+                                <div className="absolute w-3 h-3 bg-emerald-500 rounded-full -left-[6.5px] top-1.5 ring-4 ring-slate-900 border border-slate-900" />
+                                
+                                <div className="bg-slate-950/30 rounded-2xl p-4 border border-slate-800/80 hover:border-slate-700 transition-all">
+                                    <p className="text-xs text-emerald-400 font-medium mb-1">
+                                        {new Date(history.changedAt).toLocaleString("vi-VN")}
+                                    </p>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="text-slate-500 line-through text-sm">{history.oldStatus}</span>
+                                        <span className="text-slate-400 text-xs">➔</span>
+                                        <span className={`px-2 py-1 rounded text-xs font-semibold ${getStatusColor(history.newStatus as any)}`}>
+                                            {history.newStatus}
+                                        </span>
+                                    </div>
+                                    <p className="text-sm text-slate-300 italic">
+                                        "{history.note}"
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-6 bg-slate-950/20 rounded-2xl border border-dashed border-slate-800">
+                        <p className="text-slate-500 text-sm">Chưa có lịch sử thay đổi trạng thái nào.</p>
+                    </div>
+                )}
+            </div>
 
             {/* Contact Section */}
             {(job.contactName || job.contactEmail || job.contactPhone) && (
@@ -147,7 +186,7 @@ const JobInfo = ({ job }: JobInfoProps) => {
                                 <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400">
                                     <FaUserTie size={14} />
                                 </div>
-                                <span className="text-sm font-medium">{job.contactName}</span>
+                                <span className="text-sm font-medium">{new Date(job.date).toLocaleDateString("vi-VN")}</span>
                             </div>
                         )}
                         {job.contactEmail && (

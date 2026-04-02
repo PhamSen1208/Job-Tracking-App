@@ -3,10 +3,10 @@ import JobForm from "../components/jobs/form/JobForm";
 import type { JobFormState } from "../hooks/useJobForm";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useJobStore } from "../store/useJobStore";
+import { useJobs } from "../context/JobContext";
 
 const AddJob = () => {
-  const addJob = useJobStore(state => state.addJob);
+  const { addJob } = useJobs();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
   const [isSubmitError, setIsSubmitError] = useState<string | null>(null);
@@ -20,7 +20,7 @@ const AddJob = () => {
 
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      addJob(formData as any);
+      await addJob(formData as any);
       setIsSubmitSuccess(true);
       navigate("/jobs");
       toast.success("Job đã được lưu thành công!");

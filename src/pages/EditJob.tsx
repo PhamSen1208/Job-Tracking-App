@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useJobStore } from "../store/useJobStore";
+import { useJobs } from "../context/JobContext";
+import type { Job } from "../components/jobs/JobCard";
 import JobForm from "../components/jobs/form/JobForm";
 import type { JobFormState } from "../hooks/useJobForm";
 import { toast } from "react-toastify";
@@ -8,28 +9,39 @@ import { toast } from "react-toastify";
 const EditJob = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const {jobs, updateJob} = useJobStore();
-
+    const { updateJob, fetchJob } = useJobs();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [jobToEdit, setJobToEdit] = useState<Job | null>(null);
 
-    //Tìm job cần sửa
-    const jobToEdit = jobs.find((job) => job.id == Number(id));
-    //Nếu không tìm được sẽ về danh sách
+    // Lấy chi tiết công việc từ API
     useEffect(() => {
-        if(!jobToEdit){
-            toast.error("Không tìm thấy công việc");
-            navigate("/jobs");
+        if (id) {
+            fetchJob(Number(id))
+                .then(job => {
+                    if (job) setJobToEdit(job);
+                    else {
+                        toast.error("Không tìm thấy công việc");
+                        navigate("/jobs");
+                    }
+                })
+                .catch(() => {
+                    toast.error("Lỗi khi tải công việc");
+                    navigate("/jobs");
+                })
+                .finally(() => setIsLoading(false));
         }
-    }, [jobToEdit, navigate]);
+    }, [id, fetchJob, navigate]);
 
-    if(!jobToEdit) return null;
+    if (isLoading) {
+        return <div className="min-h-[50vh] flex justify-center items-center text-emerald-500 animate-pulse">Đang tải dữ liệu...</div>;
+    }
+    if (!jobToEdit) return null;
 
     const handleSubmit = async (formData: JobFormState) => {
         setIsSubmitting(true);
         try {
-            await new Promise(resolve => setTimeout(resolve,1500));
-            //Gọi hàm cập nhật
-            updateJob(Number(id), formData as any);
+            await updateJob(Number(id), formData as any);
             toast.success("Cập nhật thành công!");
             navigate(`/jobs/${id}`);
         } catch (error) {

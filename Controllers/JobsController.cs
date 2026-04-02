@@ -22,7 +22,7 @@ namespace Jobster.Controllers
 
         //Lấy danh sách jobs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Job>>> Getjobs() 
+        public async Task<ActionResult<IEnumerable<Job>>> Getjobs()
         {
             var userId = GetUserId();
             return await _context.Jobs
@@ -32,7 +32,7 @@ namespace Jobster.Controllers
 
         //Thêm job mới
         [HttpPost]
-        public async Task<ActionResult<Job>> PostJob([FromBody]CreateJobDto jobDto)
+        public async Task<ActionResult<Job>> PostJob([FromBody] CreateJobDto jobDto)
         {
             var job = new Job
             {
@@ -49,40 +49,58 @@ namespace Jobster.Controllers
                 ContactEmail = jobDto.Contact.Email,
                 ContactPhone = jobDto.Contact.Phone,
                 Description = jobDto.Description,
-        
+
                 // Luôn luôn lấy UserId từ Token để đảm bảo an toàn
                 UserId = GetUserId(),
-                AppliedDate = DateTime.Now
+                AppliedDate = DateTime.UtcNow
             };
-            
-            _context.Jobs.Add(job);
-            await _context.SaveChangesAsync(); 
 
-            return CreatedAtAction(nameof(Getjobs), new {id = job.Id}, job);
+            _context.Jobs.Add(job);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(Getjobs), new { id = job.Id }, job);
         }
 
         //Xem chi tiết 1 job
         [HttpGet("{id}")]
-        public async Task<ActionResult<Job>> Getjob (int id)
+        public async Task<ActionResult<Job>> Getjob(int id)
         {
             var userId = GetUserId();
             var job = await _context.Jobs.FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
-            
-            if(job == null)
+
+            if (job == null)
             {
                 return NotFound("Không tìm thấy công việc này hoặc bạn không có quyền truy cập");
             }
             return job;
         }
 
+        //Xem lịch sử thay đổi 1 job
+        [HttpGet("{id}/history")]
+        public async Task<ActionResult<JobHistory>> GetJobHistory(int id)
+        {
+            var userId = GetUserId();
+
+            //Kiểm tra job có tồn tại và có thuộc về user này không
+            var jobExist = await _context.Jobs.AnyAsync(j => j.Id == id && j.UserId == userId);
+
+            if(!jobExist)
+            {
+                return NotFound("Không tìm thấy công việc này hoặc bạn không có quyền xem lịch sử");
+            }
+            //Lấy lịch sử thay đổi của job
+            var histories = await _context.JobHistories.Where(h => h.JobId == id).OrderByDescending(h => h.ChangedAt).ToListAsync();
+            return Ok(histories);
+        }
+
         //Cập nhật job
         [HttpPut("{id}")]
-        public async Task<ActionResult<Job>> Putjob(int id, [FromBody]CreateJobDto jobDto)
+        public async Task<ActionResult<Job>> Putjob(int id, [FromBody] CreateJobDto jobDto)
         {
             var userId = GetUserId();
             // Kiểm tra xem job có tồn tại và có thuộc về user này không
             var existingJob = await _context.Jobs.AsNoTracking().FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
-            
+
             if (existingJob == null)
             {
                 return NotFound("Không tìm thấy công việc này hoặc bạn không có quyền sửa");
@@ -104,10 +122,23 @@ namespace Jobster.Controllers
                 ContactEmail = jobDto.Contact.Email,
                 ContactPhone = jobDto.Contact.Phone,
                 Description = jobDto.Description,
-                
+
                 UserId = GetUserId(),
                 AppliedDate = existingJob.AppliedDate
             };
+
+            if (existingJob.Status != jobDto.Status)
+            {
+                var history = new JobHistory
+                {
+                    JobId = id,
+                    OldStatus = existingJob.Status.ToString(),
+                    NewStatus = jobDto.Status.ToString(),
+                    ChangedAt = DateTime.UtcNow,
+                    Note = "Người dùng đổi trạng thái",
+                };
+                _context.JobHistories.Add(history);
+            }
 
             _context.Entry(job).State = EntityState.Modified;
 
@@ -115,9 +146,9 @@ namespace Jobster.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
-                if(!_context.Jobs.Any(e => e.Id == id))
+                if (!_context.Jobs.Any(e => e.Id == id))
                 {
                     return NotFound();
                 }
@@ -135,8 +166,8 @@ namespace Jobster.Controllers
         {
             var userId = GetUserId();
             var job = await _context.Jobs.FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
-            
-            if(job == null)
+
+            if (job == null)
             {
                 return NotFound("Không tìm thấy công việc này hoặc bạn không có quyền xóa");
             }

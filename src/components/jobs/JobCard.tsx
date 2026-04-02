@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
-import location from "../../assets/images/location.svg";
-import date from "../../assets/images/date.svg";
+import location from "../../assets/images/Location.svg";
+import dateIcon from "../../assets/images/Date.svg";
 import { memo } from "react";
 import { STATUS_COLORS, TYPE_COLORS, POSITION_COLORS } from "../../constants/jobConstants"
 import type {JobStatus, JobType, JobPosition} from "../../constants/jobConstants"
-import { useJobStore } from "../../store/useJobStore";
+import { useJobs } from "../../context/JobContext";
 import { toast } from "react-toastify";
+import { FaCalendarAlt } from "react-icons/fa";
 
 
 export type Job = {
@@ -19,7 +20,21 @@ export type Job = {
     type: JobType;
     position: JobPosition;
     status: JobStatus;
+    description?: string;
+    skills?: string;
+    contactName?: string;
+    contactEmail?: string;
+    contactPhone?: string;
 };
+
+export type JobHistory = {
+    id: number;
+    jobId: number;
+    oldStatus: string;
+    newStatus: string;
+    changedAt: string;
+    note: string;
+}
 
 type JobCardProps = {
     job: Job;
@@ -28,7 +43,7 @@ type JobCardProps = {
 
 
 const JobCard = memo(({job}: JobCardProps ) => {
-    const deleteJob = useJobStore((state) => state.deleteJob);
+    const { deleteJob } = useJobs();
 
     const handleDelete = () => {
         if (window.confirm("Bạn có chắc chắn muốn xóa công việc này không?")) {
@@ -58,9 +73,9 @@ const JobCard = memo(({job}: JobCardProps ) => {
                     <span className="text-sm text-slate-300">{job.location}</span>
                 </div>
 
-                <div className="flex flex-wrap px-6 py-4 gap-2">
-                    <img src={date} alt="Date"/>
-                    <span className="text-sm text-slate-300">{job.date}</span>
+                <div className="flex flex-wrap px-6 py-4 gap-2 items-center">
+                    <FaCalendarAlt size={14} className="text-slate-400"/>
+                    <span className="text-sm text-slate-300">{new Date(job.date).toLocaleDateString("vi-VN")}</span>
                 </div>
             </div>
 

@@ -66,5 +66,9 @@ namespace Jobster.Models
         
         // Navigation property: Dùng để lấy thông tin User từ Job một cách dễ dàng
         public User? User { get; set; }
+
+        // Navigation property: Dùng để lấy thông tin JobHistory từ Job một cách dễ dàng
+        public ICollection<JobHistory> Histories {get; set;} = new List<JobHistory>();
+
     }
 }

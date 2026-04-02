@@ -1,11 +1,11 @@
 import schedule from "../assets/images/Schedule.svg"
-import { useJobStore } from "../store/useJobStore";
+import { useJobs } from "../context/JobContext";
 import { FaCalendarCheck, FaBuilding } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Schedule = () => {
     //Lấy danh sách jobs lưu ở store
-    const {jobs} = useJobStore();
+    const {jobs} = useJobs();
 
     //Lọc ra các job có status là Interview
     const interviewJobs = jobs.filter((job) => job.status === "Interview");

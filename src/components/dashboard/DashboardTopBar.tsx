@@ -1,12 +1,12 @@
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import icon from "../../assets/images/icon.png"
-import { useJobStore } from "../../store/useJobStore";
+import { useJobs } from "../../context/JobContext";
 import { useState } from "react";
 
 const DashBoardTopBar = () => {
     const { user, logout } = useAuth();
-    const jobs = useJobStore((state) => state.jobs);
+    const { jobs } = useJobs();
     const interviewJobsCount = jobs.filter(job => job.status === 'Interview').length;
     const [open, setOpen] = useState(false);
 

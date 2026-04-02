@@ -14,6 +14,7 @@ namespace Jobster.Data
         public DbSet<Profile> Profiles => Set<Profile>();
         public DbSet<UserExperience> Experiences => Set<UserExperience>();
         public DbSet<UserProject> Projects => Set<UserProject>();
+        public DbSet<JobHistory> JobHistories => Set<JobHistory>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

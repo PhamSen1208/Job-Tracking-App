@@ -1,10 +1,10 @@
 import JobCard from "../components/jobs/JobCard";
-import { useJobStore } from "../store/useJobStore";
+import { useJobs } from "../context/JobContext";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
 const Jobs = () => {
-  const jobs = useJobStore((state) => state.jobs); //Lấy danh sách job từ store
+  const { jobs, isLoading } = useJobs(); // Lấy danh sách job từ API
   const [searchWord, setSearchWord] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterType, setFilterType] = useState("All");
@@ -41,6 +41,14 @@ const Jobs = () => {
     setFilterPosition("All");
     setCurrentPage(1);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center">
+        <p className="text-xl text-emerald-500 animate-pulse font-medium">Đang đồng bộ dữ liệu...</p>
+      </div>
+    );
+  }
 
   return (
     <>

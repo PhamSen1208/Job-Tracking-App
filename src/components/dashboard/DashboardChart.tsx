@@ -1,8 +1,8 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useJobStore } from '../../store/useJobStore';
+import { useJobs } from "../../context/JobContext";
 
 const DashboardChart = () => {
-    const jobs = useJobStore((state) => state.jobs);
+    const { jobs } = useJobs();
 
     // Xử lý dữ liệu gom nhóm theo tháng
     const chartData = jobs.reduce((acc: any[], job) => {

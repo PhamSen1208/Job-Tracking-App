@@ -2,11 +2,11 @@ import pending from "../../assets/images/Pending.svg";
 import schedule from "../../assets/images/Schedule.svg";
 import reject from "../../assets/images/Reject.svg";
 import { useJobStats } from "../../hooks/useJobStats"
-import { useJobStore } from "../../store/useJobStore";
+import { useJobs } from "../../context/JobContext";
 
 const DashboardStats = () => {
 
-  const jobs = useJobStore(state => state.jobs)
+  const { jobs } = useJobs();
   const stats = useJobStats(jobs)
 
   return (

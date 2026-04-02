@@ -1,9 +1,9 @@
-import { useJobStore } from "../store/useJobStore";
+import { useJobs } from "../context/JobContext";
 import { FaClock, FaCalendar, FaMapMarkerAlt, FaBriefcase, FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Board = () => {
-    const { jobs, updateJob } = useJobStore();
+    const { jobs, updateJob } = useJobs();
     
     // Phân loại job theo status
     const pendingJobs = jobs.filter(job => job.status === 'Pending');
