@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import location from "../../assets/images/Location.svg";
+import location from "../../assets/images/location.svg";
 import { memo } from "react";
 import { STATUS_COLORS, TYPE_COLORS, POSITION_COLORS } from "../../constants/jobConstants"
 import type {JobStatus, JobType, JobPosition} from "../../constants/jobConstants"
