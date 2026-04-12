@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.HttpOverrides;
+using Jobster.Services.Interfaces;
+using Jobster.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -88,6 +90,8 @@ builder.Services.AddControllers()
     });
 
 var app = builder.Build();
+
+builder.Services.AddScoped<IJobService, JobService>();
 
 // Tự động chạy Migrations khi khởi động app
 using (var scope = app.Services.CreateScope())

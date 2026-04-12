@@ -37,7 +37,7 @@ const mapToFrontendJob = (apiJob: any): Job => {
         skills: apiJob.skills || "",
         date: apiJob.appliedDate,
         status: frontendStatus,
-        position: apiJob.position === 'TechLead' ? 'Senior' : apiJob.position, // Techlead không có trong BE C#
+        position: apiJob.position === 'TechLead' ? 'Senior' : apiJob.position,
         type: frontendType,
         contactName: apiJob.contactName || "",
         contactEmail: apiJob.contactEmail || "",
