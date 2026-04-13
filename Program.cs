@@ -89,9 +89,9 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-var app = builder.Build();
-
 builder.Services.AddScoped<IJobService, JobService>();
+
+var app = builder.Build();
 
 // Tự động chạy Migrations khi khởi động app
 using (var scope = app.Services.CreateScope())
