@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Jobster.Models;
-using Jobster.Services.Interfaces; 
+using Jobster.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-
+//Tày a man vô sửa code tí hehehe
 namespace Jobster.Controllers
 {
     [Route("api/[controller]")]
@@ -38,7 +38,7 @@ namespace Jobster.Controllers
             return Ok(job);
         }
 
-        
+
         private int GetUserId()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
